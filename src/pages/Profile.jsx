@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 function Profile() {
   const fileRef = useRef(null);
-  const {currentUser} = useSelector((state) => state.user);
+  const {currentUser,loading,error} = useSelector((state) => state.user);
   const [file,setFile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
@@ -53,10 +53,11 @@ function Profile() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(`${currentUser._id}`);
     try {
       dispatch(updateUserStart());
       const res = await fetch(`http://localhost:3000/api/user/update/${currentUser._id}`, {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -170,7 +171,7 @@ function Profile() {
         className='border p-3 rounded-lg'/>
         <input type='password' placeholder='password' id='password'
         className='border p-3 rounded-lg' onChange={handleChange}/>
-        <button className='bg-slate-500 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>Update</button>
+        <button disabled={loading} className='bg-slate-500 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'>{loading ? 'Loading...' : 'Update'}</button>
         <Link
           className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95'
           to={'/createlisting'}
